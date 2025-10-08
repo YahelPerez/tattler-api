@@ -1,0 +1,36 @@
+[{
+  "_id": {
+    "$oid": "68e5a6af85640da63fb9e46b"
+  },
+  "name": "Tacos los Weros",
+  "cuisine_type": "Tacos",
+  "addrress": "Blvd. Eusebio Kino No. 4,Hermosillo",
+  "rating": 4.6
+},
+{
+  "_id": {
+    "$oid": "68e5a6af85640da63fb9e46c"
+  },
+  "name": "La Panga de Nico",
+  "cuisine_type": "Mariscos",
+  "addrress": "Calle Miguel de Cervantes Saavedra 239, Guadalajara",
+  "rating": 4.2
+},
+{
+  "_id": {
+    "$oid": "68e5a6af85640da63fb9e46d"
+  },
+  "name": "Santo Coyote",
+  "cuisine_type": "Mexicana",
+  "addrress": "Tennyson 133, Polanco, Ciudad de México",
+  "rating": 4.5
+},
+{
+  "_id": {
+    "$oid": "68e5a6af85640da63fb9e46e"
+  },
+  "name": "El rey del cabrito",
+  "cuisine_type": " Norteña",
+  "addrress": "Av. de la Constitución 817, Monterrey",
+  "rating": 4.8
+}]
