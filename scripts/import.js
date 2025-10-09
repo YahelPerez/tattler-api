@@ -4,48 +4,48 @@ const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
 
-// 2. Configurar la conexión a la base de datos
+// 2. Configure the database connection
 const uri = "mongodb+srv://yahelperez_db_user:3uvBkRtVr2eOicik@cluster0.20xcqwa.mongodb.net/"; 
 const dbName = 'tattlerDB';
 const collectionName = 'restaurants';
 
-// 3. Definir la ruta al archivo CSV
+// 3. Define the path to the CSV file
 const csvFilePath = path.join(__dirname, 'restaurants.csv');
 const results = [];
 
-// 4. Función principal asíncrona para ejecutar el script
+// 4. Asynchronous main function to execute the script
 async function run() {
   const client = new MongoClient(uri);
 
   try {
-    // Conectar al servidor de MongoDB
+    // Connect to MongoDB Server
     await client.connect();
     console.log("Connected successfully to MongoDB server");
 
     const database = client.db(dbName);
     const collection = database.collection(collectionName);
 
-    // Leer y procesar el archivo CSV
+    // Read and process the CSV file
     fs.createReadStream(csvFilePath)
       .pipe(csv())
       .on('data', (data) => {
-        // Convertir el rating a número, si es necesario
+        // Convert the rating to a number, if necessary
         data.rating = parseFloat(data.rating); 
         results.push(data);
       })
       .on('end', async () => {
         console.log('CSV file successfully processed.');
 
-        // Borrar datos existentes para evitar duplicados
+        // Erase existing data to avoid duplicates
         await collection.deleteMany({});
         console.log('Existing data cleared.');
 
-        // Insertar los nuevos datos en la colección
+        // Insert the new data into the collection
         const insertResult = await collection.insertMany(results);
         console.log(`${insertResult.insertedCount} documents were inserted.`);
         console.log('Data imported successfully!');
 
-        // Cerrar la conexión
+        // Close the connection
         await client.close();
       });
 
@@ -55,5 +55,5 @@ async function run() {
   }
 }
 
-// 5. Ejecutar la función
+// 5. Execute the function
 run().catch(console.dir);
