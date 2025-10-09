@@ -38,7 +38,14 @@ npm start
 The project is organized as follows:
 
 /
-├── scripts/         # Contains the scripts for importing data into the database
-├── backup/          # Contains the database backup files
-├── screenshots/     # Contains screenshots of the DB setup
-└── README.md        # This file
+├── index.js         # Main server file
+├── models/          # Contains the Mongoose data schemas
+│   └── Restaurant.js
+├── routes/          # Contains the API route files
+│   └── restaurants.js
+├── scripts/         # Contains helper scripts (like data import)
+├── backup/          # Contains database backup files
+├── screenshots/     # Contains screenshots (tests, DB setup, etc.)
+├── .env             # Environment variables file (local)
+├── .gitignore       # Files and folders ignored by Git
+└── package.json     # Project dependencies and scripts
