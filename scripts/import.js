@@ -1,24 +1,31 @@
-// 1. Requerir las librerías
+// 1. Require necessary libraries
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
+require('dotenv').config(); // Loads environment variables from .env file
 
-// 2. Configure the database connection
-const uri = "mongodb+srv://yahelperez_db_user:3uvBkRtVr2eOicik@cluster0.20xcqwa.mongodb.net/"; 
+// 2. Configure the database connection from the .env file
+const uri = process.env.MONGODB_URI; // Get the secure connection string
 const dbName = 'tattlerDB';
 const collectionName = 'restaurants';
 
-// 3. Define the path to the CSV file
+// 3. Verify that the connection string (URI) has been loaded correctly
+if (!uri) {
+  console.error("Error: MONGODB_URI not found in .env file. Please check your .env file.");
+  process.exit(1); // Stop the script if there is no URI
+}
+
+// 4. Define the path to the CSV file and prepare the array for the results
 const csvFilePath = path.join(__dirname, 'restaurants.csv');
 const results = [];
 
-// 4. Asynchronous main function to execute the script
+// 5. Main async function to run the script
 async function run() {
   const client = new MongoClient(uri);
 
   try {
-    // Connect to MongoDB Server
+    // Connect to the MongoDB server
     await client.connect();
     console.log("Connected successfully to MongoDB server");
 
@@ -29,31 +36,37 @@ async function run() {
     fs.createReadStream(csvFilePath)
       .pipe(csv())
       .on('data', (data) => {
-        // Convert the rating to a number, if necessary
+        // Convert the rating to a number to ensure the data type is correct
         data.rating = parseFloat(data.rating); 
         results.push(data);
       })
       .on('end', async () => {
         console.log('CSV file successfully processed.');
 
-        // Erase existing data to avoid duplicates
-        await collection.deleteMany({});
-        console.log('Existing data cleared.');
+        try {
+          // Delete existing data in the collection to avoid duplicates
+          await collection.deleteMany({});
+          console.log('Existing data in the collection cleared.');
 
-        // Insert the new data into the collection
-        const insertResult = await collection.insertMany(results);
-        console.log(`${insertResult.insertedCount} documents were inserted.`);
-        console.log('Data imported successfully!');
-
-        // Close the connection
-        await client.close();
+          // Insert the new data into the collection
+          const insertResult = await collection.insertMany(results);
+          console.log(`${insertResult.insertedCount} documents were inserted successfully.`);
+          console.log('Data import finished!');
+        
+        } catch (err) {
+            console.error("An error occurred during database operations:", err);
+        } finally {
+            // Close the connection
+            await client.close();
+            console.log("MongoDB connection closed.");
+        }
       });
 
   } catch (err) {
-    console.error("An error occurred:", err);
+    console.error("An error occurred while connecting to MongoDB:", err);
     await client.close();
   }
 }
 
-// 5. Execute the function
+// 6. Run the main function
 run().catch(console.dir);
